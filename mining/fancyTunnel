@@ -52,7 +52,7 @@ function refuel(amount)
           while turtle.getItemCount(n) > 0 and turtle.getFuelLevel() < needed do
             turtle.refuel(1)
           end
-          if turtle.getFuellevel() >= needed then
+          if turtle.getFuelLevel() >= needed then
             -- Got enough fuel, set the selector back to one and return yep
             turtle.select(1)
             return true
@@ -114,6 +114,35 @@ function mineForward()
   end
   --TODO set position knowledge in here
 end
+
+--Mines up and moves up...
+function mineUp()
+  refuel(1)
+  while not turtle.up() do
+    if turtle.detectUp() then
+      refuel(1)
+      if turtle.digUp() then
+        if not collect() then
+          print("I am le full")
+        end
+      else
+        return false
+      end
+    else
+      sleep(0.5)
+    end
+  end
+end
+
+--Make sure that when we mine up a square, it stays empty
+function emptyUp()
+  refuel(1)
+  while turtle.detectUp() do
+    turtle.digUp()
+  end
+end
+
+
 
 
 --Mines out a slot of the tunnel
