@@ -1,17 +1,23 @@
--- Dig in a straight direction making a fancy tunnel
--- XXXXXX
--- XX++XX
--- X++++X
--- X++++X
--- X*+++X
--- XXXXXX
+-- Dig a fancy straight tunnel
+-- #####
+-- ##+##
+-- #+++#
+-- #+++#
+-- #+++#
+-- #*++#
+-- #####
 -- Start at the * one block back and mine out that size thingy until running out of fuel
 
-Version = "v1.0.0"
-LengthQuestion = true
+local Version = "v1.0.0"
+local LengthQuestion = true
+
+local lengthVar = 0 -- how far have we gotten?
+local desiredLength  -- filled later
+
+--Total number of collected items
+local collected = 0
 
 -- Functions to do work with
-
 function version() -- Version function
     return Version
 end
@@ -29,6 +35,131 @@ function clearscreen() -- Clearscreen function
     term.setCursorPos( 1, 3 )
 end
 
+--A fairly naieve refueling algorithm
+function refuel(amount)
+  local fuelLevel = turtle.getFuelLevel()
+  if fuelLevel == "unlimited" then
+    return true
+  end
+
+  local needed = amount -- TODO: or how much fuel to mine the tunnel out
+  if turtle.getFuelLevel() < needed then
+    local fueled = false
+    for n=1,16 do
+      if turtle.getItemCount(n) > 0 then
+        turtle.select(n)
+        if turtle.refuel(1) then
+          while turtle.getItemCount(n) > 0 and turtle.getFuelLevel() < needed do
+            turtle.refuel(1)
+          end
+          if turtle.getFuellevel() >= needed then
+            -- Got enough fuel, set the selector back to one and return yep
+            turtle.select(1)
+            return true
+          end
+        end
+      end
+    end
+    -- couldn't find any fuel, or couldn't satisfy needed fuel values
+    turtle.select(1)
+    return false
+  end
+  -- Has enough fuel
+  return true
+end
+
+-- Determine if we can collect the item that we possibly just mined or something
+local function collect()
+  local bFull = true
+  local nTotalItems = 0
+  for n=1,16 do
+    local nCount = turtle.getItemCount(n)
+    if nCount == 0 then
+      bFull = false
+    end
+    nTotalItems = nTotalItems + nCount
+  end
+
+  if nTotalItems > collected then
+    collected = nTotalItems
+    print("Collected " .. collected .. " items")
+  end
+  if bFull then
+    print("No empty slots left!")
+    return false
+  end
+  return true
+end
+
+--Head Forward
+function mineForward()
+  --TODO: would auto-refuel here?
+  while not turtle.forward() do
+    if turtle.detect() then
+      if turtle.dig() then
+        if not collect() then
+          print("I should return stuff now....")
+        end
+        --Also move into this spot
+        turtle.forward()
+        return true
+      else
+        return false
+      end
+    elseif turtle.attack() then
+      if not collect() then
+        print("killed something? and can't collect")
+      end
+    else
+      sleep(0.5) --wait a bit?
+    end
+  end
+  --TODO set position knowledge in here
+end
+
+
+--Mines out a slot of the tunnel
+-- #####
+-- ##+##
+-- #+++#
+-- #+++#
+-- #+++#
+-- #*++#
+-- #####
+function mineSlot
+  refuel(22) -- one slot for the wall is 22 operations (probably not the most efficient, but whatevz
+  mineForward() --move into the slot to begin mining
+  turtle.digUp()
+  turtle.digDown()
+  turtle.turnRight()
+
+  mineForward()
+  turtle.digUp()
+  turtle.digDown()
+
+  mineForward()
+  turtle.digUp()
+  turtle.digDown()
+
+  -- Move Up into top right corner
+  turtle.up()
+  turtle.turnLeft()
+  turtle.digUp()
+  turtle.up()
+
+  -- Prepare to mine back
+  turtle.turnLeft()
+  mineForward()
+  turtle.digUp() --the center notch
+  mineForward()
+
+  --Return to start position for next round
+  turtle.down()
+  turtle.down()
+  turtle.turnRight()
+end
+
+
 -- Main logic
 clearscreen()
 while LengthQuestion == true do 
@@ -39,7 +170,7 @@ while LengthQuestion == true do
         print("Please answer with a number.")
     elseif length > 0 then
         LengthQuestion = false
-        lengthVar = length --EW GLOBALS did this even work?
+        desiredLength = length --EW GLOBALS did this even work?
     else
         print("The tunnel length must be positive.")
     end
@@ -47,5 +178,19 @@ end
 
 clearscreen()
 print("Would have made a tunnel " .. lengthVar .. " long")
+
+--Start mining logic here!
+refuel(1)
+turtle.up() --start up one square from where things are
+--Calculate how much fuel is needed for the entire thing
+local totalFuel = lengthVar * 22
+refuel(totalFuel)
+
+while lengthVar < desiredLength do
+  --MINE DAT TUNEL
+  lengthVar = lengthVar +1
+  mineSlot()
+end
+
 
 -- vim: set filetype=lua :
