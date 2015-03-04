@@ -126,8 +126,8 @@ end
 -- #+++#
 -- #*++#
 -- #####
-function mineSlot
-  refuel(22) -- one slot for the wall is 22 operations (probably not the most efficient, but whatevz
+function mineSlot()
+  refuel(22) -- one slot for the wall is 22 operations, possibly not the most efficient
   mineForward() --move into the slot to begin mining
   turtle.digUp()
   turtle.digDown()
