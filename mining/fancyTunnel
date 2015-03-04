@@ -33,7 +33,7 @@ end
 clearscreen()
 while LengthQuestion == true do 
     print("Length of tunnel?")
-    length = toNumber(read())
+    length = tonumber(read())
     clearscreen()
     if length == nil then
         print("Please answer with a number.")
