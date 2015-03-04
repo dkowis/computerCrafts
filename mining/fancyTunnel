@@ -31,17 +31,15 @@ end
 
 -- Main logic
 clearscreen()
-lengthVar = 10
 while LengthQuestion == true do 
     print("Length of the tunnel?")
-    print("wat: " .. lengthVar)
-    length = tonumber(read())
+    local length = tonumber(read())
     clearscreen()
     if length == nil then
         print("Please answer with a number.")
     elseif length > 0 then
         LengthQuestion = false
-        lengthVar = 0 --EW GLOBALS did this even work?
+        lengthVar = length --EW GLOBALS did this even work?
     else
         print("The tunnel length must be positive.")
     end
