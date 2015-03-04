@@ -100,9 +100,6 @@ function mineForward()
         if not collect() then
           print("I should return stuff now....")
         end
-        --Also move into this spot
-        turtle.forward()
-        return true
       else
         return false
       end
@@ -111,7 +108,7 @@ function mineForward()
         print("killed something? and can't collect")
       end
     else
-      sleep(0.5) --wait a bit?
+      sleep(0.5) --wait a bit? for like gravel to fall
     end
   end
   --TODO set position knowledge in here
