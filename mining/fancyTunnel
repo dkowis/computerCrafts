@@ -10,6 +10,8 @@
 Version = "v1.0.0"
 LengthQuestion = true
 
+-- Functions to do work with
+
 function version() -- Version function
     return Version
 end
@@ -26,9 +28,6 @@ function clearscreen() -- Clearscreen function
     regwrite( "Developed by BeepDog", 17, 12 )
     term.setCursorPos( 1, 3 )
 end
-
-
-
 
 -- Main logic
 clearscreen()
@@ -48,3 +47,5 @@ end
 
 clearscreen()
 print("Would have made a tunnel " .. lengthVar .. " long")
+
+-- vim: set filetype=lua :
