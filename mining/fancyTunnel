@@ -93,9 +93,10 @@ end
 
 --Head Forward
 function mineForward()
-  --TODO: would auto-refuel here?
+  refuel(1)
   while not turtle.forward() do
     if turtle.detect() then
+      refuel(1)
       if turtle.dig() then
         if not collect() then
           print("I should return stuff now....")
