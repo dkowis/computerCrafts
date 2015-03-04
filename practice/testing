@@ -1,0 +1,4 @@
+local author = "BeepDog"
+
+term.clear()
+print("Hello World from " .. author)
