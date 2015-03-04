@@ -31,7 +31,9 @@ end
 
 -- Main logic
 clearscreen()
+lengthVar = 10
 while LengthQuestion == true do 
+    println("wat: " .. lengthVar)
     print("Length of tunnel?")
     length = tonumber(read())
     clearscreen()
@@ -39,7 +41,7 @@ while LengthQuestion == true do
         print("Please answer with a number.")
     elseif length > 0 then
         LengthQuestion = false
-        lengthVar = 0 --EW GLOBALS
+        lengthVar = 0 --EW GLOBALS did this even work?
     else
         print("The tunnel length must be positive.")
     end
