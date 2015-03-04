@@ -192,5 +192,13 @@ while lengthVar < desiredLength do
   mineSlot()
 end
 
+print("COMPLETED")
+
+--Now it should return to start...
+refuel( lengthVar + 2)
+turtle.down()
+while lengthVar > 0 do
+  turtle.back()
+end
 
 -- vim: set filetype=lua :
