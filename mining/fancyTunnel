@@ -33,7 +33,7 @@ end
 clearscreen()
 lengthVar = 10
 while LengthQuestion == true do 
-    println("wat: " .. lengthVar)
+    print("wat: " .. lengthVar)
     print("Length of tunnel?")
     length = tonumber(read())
     clearscreen()
