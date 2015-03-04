@@ -137,7 +137,13 @@ end
 --Make sure that when we mine up a square, it stays empty
 function emptyUp()
   refuel(1)
+  if turtle.detectUp() then
+    turtle.digUp()
+  end
+
+  -- If another thing appears, wait for stuff to fall and make sure it's all gone
   while turtle.detectUp() do
+    sleep(0.5)
     turtle.digUp()
   end
 end
@@ -156,28 +162,27 @@ end
 function mineSlot()
   refuel(22) -- one slot for the wall is 22 operations, possibly not the most efficient
   mineForward() --move into the slot to begin mining
-  turtle.digUp()
+  emptyUp()
   turtle.digDown()
   turtle.turnRight()
 
   mineForward()
-  turtle.digUp()
+  emptyUp()
   turtle.digDown()
 
   mineForward()
-  turtle.digUp()
+  emptyUp()
   turtle.digDown()
 
   -- Move Up into top right corner
   turtle.up()
   turtle.turnLeft()
-  turtle.digUp()
-  turtle.up()
+  mineUp()
 
   -- Prepare to mine back
   turtle.turnLeft()
   mineForward()
-  turtle.digUp() --the center notch
+  emptyUp()
   mineForward()
 
   --Return to start position for next round
