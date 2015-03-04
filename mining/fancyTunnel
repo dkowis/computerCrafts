@@ -95,61 +95,51 @@ end
 function mineForward()
   refuel(1)
   while not turtle.forward() do
-    if turtle.detect() then
-      refuel(1)
-      if turtle.dig() then
-        if not collect() then
-          print("I should return stuff now....")
-        end
-      else
-        return false
-      end
-    elseif turtle.attack() then
-      if not collect() then
-        print("killed something? and can't collect")
-      end
-    else
-      sleep(0.5) --wait a bit? for like gravel to fall
-    end
+    mineDir("forward")
   end
   --TODO set position knowledge in here
 end
+
+-- Takes a direction and then will make sure that direction is empty (handling gravel n such)
+function mineDir(direction)
+  local fdetect
+  local fdig
+
+  if direction == "up" then
+    fdetect = turtle.detectUp
+    fdig = turtle.digUp
+  elseif direction == "down" then
+    fdetect = turtle.detectDown
+    fdig = turtle.digDown
+  else  -- must be forward!
+    fdetect = turtle.detect
+    fdig = turtle.dig
+  end
+
+  while fdetect() do
+    refuel(1)
+    if fdig() then
+      collect() --TODO: this should be smarter...
+    else
+      return false --why return false here?
+    end
+    sleep(0.5)
+  end
+end
+
 
 --Mines up and moves up...
 function mineUp()
   refuel(1)
   while not turtle.up() do
-    if turtle.detectUp() then
-      refuel(1)
-      if turtle.digUp() then
-        if not collect() then
-          print("I am le full")
-        end
-      else
-        return false
-      end
-    else
-      sleep(0.5)
-    end
+    mineDir("up")
   end
 end
 
 --Make sure that when we mine up a square, it stays empty
 function emptyUp()
-  refuel(1)
-  if turtle.detectUp() then
-    turtle.digUp()
-  end
-
-  -- If another thing appears, wait for stuff to fall and make sure it's all gone
-  while turtle.detectUp() do
-    sleep(0.5)
-    turtle.digUp()
-  end
+  mineDir("up")
 end
-
-
-
 
 --Mines out a slot of the tunnel
 -- #####
@@ -186,6 +176,7 @@ function mineSlot()
   mineForward()
 
   --Return to start position for next round
+  --TODO replace all down calls iwth make sure we can actually go down calls
   turtle.down()
   turtle.down()
   turtle.turnRight()
@@ -230,6 +221,7 @@ print("COMPLETED")
 refuel( lengthVar + 2)
 turtle.down()
 while lengthVar > 0 do
+  lengthVar = lengthVar - 1
   turtle.back()
 end
 
