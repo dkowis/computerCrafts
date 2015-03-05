@@ -31,6 +31,16 @@ function digDir(direction)
   end
 end
 
+function digUp()
+  digDir("up")
+end
+function digDown()
+  digDir("down")
+end
+function digFwd()
+  digDir("forward")
+end
+
 
 --mines and moves in any direction ensuring that the blocks don't remain
 function mineDir(direction)
@@ -50,6 +60,16 @@ function mineDir(direction)
     -- TODO: this might need a delay...
     digDir(direction)
   end
+end
+
+function mineUp()
+  mineDir("up")
+end
+function mineDown()
+  mineDir("down")
+end
+function mineFwd()
+  mineDir("forward")
 end
 
 

@@ -44,20 +44,20 @@ function entryTunnel(theLength)
   sturtle.refuel(1)
   turtle.up()
   while myLength > 0 do
-    mylength = mylength - 1
+    myLength = myLength - 1
     sturtle.refuel(1)
     sdig.mineFwd()
     sdig.digUp()
     sdig.digDown()
     turtle.turnRight()
 
-    turtle.mineFwd()
+    sdig.mineFwd()
     sdig.digUp()
     sdig.digDown()
     
     turtle.turnLeft()
     turtle.turnLeft()
-    sdig.mineForward()
+    sdig.mineFwd()
     turtle.turnRight()
   end
 
@@ -67,7 +67,7 @@ end
 
 function chamberStartPoint(theLength)
   -- Go left this many blocks, and that's our start point
-  local left = math.ceil(theLength / 2)
+  local left = math.ceil((theLength - 2) / 2)
 
   sturtle.refuel(1)
   sdig.mineFwd()
@@ -80,6 +80,7 @@ function chamberStartPoint(theLength)
 
   -- We're now at our starting point, bottom left of the chamber to mine out (inside it)
   turtle.turnRight()
+  sdig.mineDown() -- Actually start one below, it's kind of lame, but whatevz
 end
 
 function digChamber(tlength, twidth, theight)
@@ -87,23 +88,28 @@ function digChamber(tlength, twidth, theight)
   -- width is in front of me
   -- Height is how many blocks tall to make it
   local remainingHeight = theight
+  local forwardPass = true
 
   while remainingHeight > 0 do
+    print("Remaining Height: "..remainingHeight)
     -- Still got some chamber to work on
     -- If it's more than 3, we can add two to current and dig up/down
     -- if it's 2 we can add one to current and dig one up
     -- if it's 1 we can add zero and dig up
-    -- TODO: somethying about passHeight is wrong
     local passHeight 
-    if remainingHeight > 3 then
+    if remainingHeight >= 3 then
       passHeight = 3
     else
       passHeight = remainingHeight % 3
     end
     local passLength = 0
     local passWidth = 0
+    -- Take away how tall we're going to dig
+    remainingHeight = remainingHeight - passHeight
 
+    print("Pass Height: " .. passHeight)
     --Set up start position
+    -- First pass height is wrong...
     if passHeight == 3 then
       sdig.mineUp()
       sdig.mineUp()
@@ -117,48 +123,75 @@ function digChamber(tlength, twidth, theight)
 
     while passWidth < twidth do
       passWidth = passWidth + 1
+      print("PassWidth: ".. passWidth)
       local right = false
       if passWidth % 2 == 1 then
         right = true
       end
 
-      if right then
+      -- TODO: something's broke here :(
+      if right and forwardPass then
+        print("turning Right")
         turtle.turnRight()
       else
+        print("turning Left")
         turtle.turnLeft()
       end
 
       while passLength < tlength do
-        passLength = passLength - 1
+        passLength = passLength + 1
+        print("PassLength: " .. passLength)
         if passHeight == 3 then
           sdig.digUp()
           sdig.digDown()
-          sdig.mineFwd()
         else
           sdig.digUp()
-          sdig.mineFwd() --extra, but I don't care
+        end
+        -- Since I'm in the column, if I need to dig one more, then do it
+        if passLength < tlength then
+          sdig.mineFwd()
         end
       end
-      
+      --
       -- Face forward for the next row
-      if right then
+      if right and forwardPass then
+        print("turning left (END)")
         turtle.turnLeft()
       else
+        print("turning right (END)")
         turtle.turnRight()
       end
-
       -- Done with pass, where am I?
-      -- It might just work right here...
-  end
+      passLength = 0 --reset for next pass
+      -- move into the next row to work on it
+      -- But only if we've got another row
+      if passWidth < twidth then
+        sdig.mineFwd()
+      end
+    end --width loop
+    --Reset width for another height pass?
+    passWidth = 0
 
+    --turn around completely...
+    turtle.turnLeft()
+    turtle.turnLeft()
+    -- Position yourself at the top of what you dug out to begin another pass
+    local upCount = passHeight - 1
+    while upCount > 0 do
+      upCount = upCount - 1
+      turtle.up()
+    end
+    -- Now it's the opposite of what our pass was the first time
+    forwardPass = not forwardPass
+  end --height loop
 end
 
 print("Making entry tunnel " .. args[4] .. " long")
-entryTunnel(args[4])
+entryTunnel(tonumber(args[4]))
 print("Headed to start of chamber location")
-chamberStartPoint(args[1])
+chamberStartPoint(tonumber(args[1]))
 print("Makin chamber!")
-digChamber(args[1], args[2], args[3])
+digChamber(tonumber(args[1]), tonumber(args[2]), tonumber(args[3]))
 print("OMG DONE COME FIND ME")
 
 -- vim: set filetype=lua :
