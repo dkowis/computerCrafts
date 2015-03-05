@@ -1,0 +1,9 @@
+-- Screen api
+--
+
+function regwrite(string, column, row)
+  term.setCursorPos(column,row)
+  write(string)
+end
+
+--  vim: set filetype=lua:

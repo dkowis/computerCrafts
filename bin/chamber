@@ -1,0 +1,41 @@
+-- Now to build a chamber!
+--- maybe...
+-- need to have it have a customizeable dimension, 
+-- so like
+-- Have a configurable distance off the hallway, which is where the start will be
+-- Dig in the entry tunnel
+-- Start digging the room
+-- ### H
+-- ####H
+-- ### H
+
+local args = { ... }
+
+local length
+local width
+local height
+local entryLength
+
+os.loadAPI("shlrm/api/sturtle")
+os.loadAPI("shlrm/api/sdig")
+os.loadAPI("shlrm/api/scrn")
+
+-- Functions
+function clearscreen()
+  term.clear()
+  scrn.regwrite("CHAMBERBOT", 12, 1)
+  scrn.regwrite("Developed by BeepDog", 17,12)
+  term.setCursorPos(1,3)
+end
+
+-- Primary software begins here
+if #args ~= 4 then
+  clearscreen()
+  print("Need 4 arguments:")
+  print("length width height entryLength")
+  error("no args")
+end
+
+
+
+-- vim: set filetype=lua :

@@ -1,13 +1,14 @@
 -- ComputerCraft lua script to get all the shlrm progs
+-- TODO: something to clean up things that shouldn't be there?
 
 local primarySource = "http://home.shlrm.org/computerCraft"
 
 local apis = {
-  "sturtle", "sdig"
+  "sturtle", "sdig", "scrn"
 }
 
 local progs = {
-  "fancyTunnel"
+  "fancyTunnel", "chamber"
 }
 
 local function dload(path, destination)
