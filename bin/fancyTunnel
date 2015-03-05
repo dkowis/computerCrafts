@@ -135,9 +135,11 @@ print("COMPLETED")
 --Now it should return to start...
 sturtle.refuel( lengthVar + 2)
 turtle.down()
+turtle.turnLeft()
+turtle.turnLeft()
 while lengthVar > 0 do
   lengthVar = lengthVar - 1
-  turtle.back()
+  mineForward()-- make sure we can dig our way back!
 end
 
 -- vim: set filetype=lua :
