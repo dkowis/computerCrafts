@@ -1,0 +1,44 @@
+-- ComputerCraft lua script to get all the shlrm progs
+
+local primarySource = "http://home.shlrm.org/computerCraft"
+
+local apis = {
+  "sturtle", "sdig"
+}
+
+local progs = {
+  "fancyTunnel"
+}
+
+local function dload(path, destination)
+  print("Downloading " .. path .. " to " .. destination)
+  local data = http.get("http://home.shlrm.org/computerCraft/" .. path)
+  if data then
+    print("done")
+    local file = fs.open(destination, "w")
+    file.write(data.readAll())
+    file.close()
+  else
+    print("FAILURE")
+  end
+end
+
+fs.mkdir("shlrm/api")
+fs.mkdir("shlrm/bin")
+
+for k,v in pairs(apis) do
+  dload("api/" .. v, "shlrm/api/" .. v)
+end
+
+for k,v in pairs(progs) do
+  dload("bin/" .. v, "shlrm/bin/" .. v)
+end
+
+-- Also update myself
+print("updating myself!")
+dload("uShlrm", "uShlrm")
+
+print("ALL DONE")
+
+
+-- vim: set filetype=lua :

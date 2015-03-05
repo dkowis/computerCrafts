@@ -1,0 +1,39 @@
+-- Shlrm turtle API
+
+-- Hopefully I can reuse some of this stuff in other APIs and such
+
+--A fairly naieve refueling algorithm
+function refuel(amount)
+  local fuelLevel = turtle.getFuelLevel()
+  if fuelLevel == "unlimited" then
+    return true
+  end
+
+  local needed = amount -- TODO: can't do this if I keep refuel in a lib
+  if turtle.getFuelLevel() < needed then
+    local fueled = false
+    for n=1,16 do
+      if turtle.getItemCount(n) > 0 then
+        turtle.select(n)
+        if turtle.refuel(1) then
+          while turtle.getItemCount(n) > 0 and turtle.getFuelLevel() < needed do
+            turtle.refuel(1)
+          end
+          if turtle.getFuelLevel() >= needed then
+            -- Got enough fuel, set the selector back to one and return yep
+            turtle.select(1)
+            return true
+          end
+        end
+      end
+    end
+    -- couldn't find any fuel, or couldn't satisfy needed fuel values
+    turtle.select(1)
+    return false
+  end
+  -- Has enough fuel
+  return true
+end
+
+
+-- vim: set filetype=lua :

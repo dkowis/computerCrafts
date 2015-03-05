@@ -1,0 +1,35 @@
+-- My digging API
+
+-- depends on the sturtle API
+os.loadAPI("shlrm/api/sturtle")
+
+-- Takes a direction and then will make sure that direction is empty (handling gravel n such)
+function mineDir(direction)
+  local fdetect
+  local fdig
+
+  if direction == "up" then
+    fdetect = turtle.detectUp
+    fdig = turtle.digUp
+  elseif direction == "down" then
+    fdetect = turtle.detectDown
+    fdig = turtle.digDown
+  else  -- must be forward!
+    fdetect = turtle.detect
+    fdig = turtle.dig
+  end
+
+  while fdetect() do
+    sturtle.refuel(1)
+    if fdig() then
+      collect() --TODO: this should be smarter...
+      sleep(0.5) -- only sleep once digged
+    else
+      return false --why return false here?
+    end
+
+  end
+end
+
+
+-- vim: set filetype=lua :

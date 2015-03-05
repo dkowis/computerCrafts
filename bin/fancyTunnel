@@ -120,10 +120,11 @@ function mineDir(direction)
     refuel(1)
     if fdig() then
       collect() --TODO: this should be smarter...
+      sleep(0.5) -- only sleep once digged
     else
       return false --why return false here?
     end
-    sleep(0.5)
+
   end
 end
 
@@ -152,17 +153,17 @@ end
 function mineSlot()
   refuel(22) -- one slot for the wall is 22 operations, possibly not the most efficient
   mineForward() --move into the slot to begin mining
-  emptyUp()
-  turtle.digDown()
+  mineDir("up")
+  mineDir("down")
   turtle.turnRight()
 
   mineForward()
   emptyUp()
-  turtle.digDown()
+  mineDir("down")
 
   mineForward()
   emptyUp()
-  turtle.digDown()
+  mineDir("down")
 
   -- Move Up into top right corner
   turtle.up()
@@ -172,7 +173,7 @@ function mineSlot()
   -- Prepare to mine back
   turtle.turnLeft()
   mineForward()
-  emptyUp()
+  mineDir("up")
   mineForward()
 
   --Return to start position for next round
