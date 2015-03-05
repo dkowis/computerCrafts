@@ -39,17 +39,17 @@ end
 
 --Head Forward
 function mineForward()
-  sturtle.mineDir("forward")
+  sdig.mineDir("forward")
 end
 
 
 --Mines up and moves up...
 function mineUp()
-  sturtle.mineDir("up")
+  sdig.mineDir("up")
 end
 
 function mineDown()
-  sturtle.mineDir("down")
+  sdig.mineDir("down")
 end
 
 --Make sure that when we mine up a square, it stays empty
