@@ -17,6 +17,10 @@ local desiredLength  -- filled later
 --Total number of collected items
 local collected = 0
 
+-- Load up my APIs
+os.loadAPI("shlrm/api/sturtle")
+os.loadAPI("shlrm/api/sdig")
+
 -- Functions to do work with
 function version() -- Version function
     return Version
@@ -33,39 +37,6 @@ function clearscreen() -- Clearscreen function
     regwrite( version(), 2, 12 )
     regwrite( "Developed by BeepDog", 17, 12 )
     term.setCursorPos( 1, 3 )
-end
-
---A fairly naieve refueling algorithm
-function refuel(amount)
-  local fuelLevel = turtle.getFuelLevel()
-  if fuelLevel == "unlimited" then
-    return true
-  end
-
-  local needed = amount -- TODO: or how much fuel to mine the tunnel out
-  if turtle.getFuelLevel() < needed then
-    local fueled = false
-    for n=1,16 do
-      if turtle.getItemCount(n) > 0 then
-        turtle.select(n)
-        if turtle.refuel(1) then
-          while turtle.getItemCount(n) > 0 and turtle.getFuelLevel() < needed do
-            turtle.refuel(1)
-          end
-          if turtle.getFuelLevel() >= needed then
-            -- Got enough fuel, set the selector back to one and return yep
-            turtle.select(1)
-            return true
-          end
-        end
-      end
-    end
-    -- couldn't find any fuel, or couldn't satisfy needed fuel values
-    turtle.select(1)
-    return false
-  end
-  -- Has enough fuel
-  return true
 end
 
 -- Determine if we can collect the item that we possibly just mined or something
@@ -93,53 +64,25 @@ end
 
 --Head Forward
 function mineForward()
-  refuel(1)
+  sturtle.refuel(1)
   while not turtle.forward() do
-    mineDir("forward")
+    sdig.mineDir("forward")
   end
   --TODO set position knowledge in here
-end
-
--- Takes a direction and then will make sure that direction is empty (handling gravel n such)
-function mineDir(direction)
-  local fdetect
-  local fdig
-
-  if direction == "up" then
-    fdetect = turtle.detectUp
-    fdig = turtle.digUp
-  elseif direction == "down" then
-    fdetect = turtle.detectDown
-    fdig = turtle.digDown
-  else  -- must be forward!
-    fdetect = turtle.detect
-    fdig = turtle.dig
-  end
-
-  while fdetect() do
-    refuel(1)
-    if fdig() then
-      collect() --TODO: this should be smarter...
-      sleep(0.5) -- only sleep once digged
-    else
-      return false --why return false here?
-    end
-
-  end
 end
 
 
 --Mines up and moves up...
 function mineUp()
-  refuel(1)
+  sturtle.refuel(1)
   while not turtle.up() do
-    mineDir("up")
+    sdig.mineDir("up")
   end
 end
 
 --Make sure that when we mine up a square, it stays empty
 function emptyUp()
-  mineDir("up")
+  sdig.mineDir("up")
 end
 
 --Mines out a slot of the tunnel
@@ -151,19 +94,19 @@ end
 -- #*++#
 -- #####
 function mineSlot()
-  refuel(22) -- one slot for the wall is 22 operations, possibly not the most efficient
+  sturtle.refuel(22) -- one slot for the wall is 22 operations, possibly not the most efficient
   mineForward() --move into the slot to begin mining
-  mineDir("up")
-  mineDir("down")
+  sdig.mineDir("up")
+  sdig.mineDir("down")
   turtle.turnRight()
 
   mineForward()
   emptyUp()
-  mineDir("down")
+  sdig.mineDir("down")
 
   mineForward()
   emptyUp()
-  mineDir("down")
+  sdig.mineDir("down")
 
   -- Move Up into top right corner
   turtle.up()
@@ -173,7 +116,7 @@ function mineSlot()
   -- Prepare to mine back
   turtle.turnLeft()
   mineForward()
-  mineDir("up")
+  sdig.mineDir("up")
   mineForward()
 
   --Return to start position for next round
@@ -204,11 +147,11 @@ clearscreen()
 print("Would have made a tunnel " .. lengthVar .. " long")
 
 --Start mining logic here!
-refuel(1)
+sturtle.refuel(1)
 turtle.up() --start up one square from where things are
 --Calculate how much fuel is needed for the entire thing
 local totalFuel = lengthVar * 22
-refuel(totalFuel)
+sturtle.refuel(totalFuel)
 
 while lengthVar < desiredLength do
   --MINE DAT TUNEL
@@ -219,7 +162,7 @@ end
 print("COMPLETED")
 
 --Now it should return to start...
-refuel( lengthVar + 2)
+sturtle.refuel( lengthVar + 2)
 turtle.down()
 while lengthVar > 0 do
   lengthVar = lengthVar - 1
