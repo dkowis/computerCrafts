@@ -23,8 +23,8 @@ local function dload(path, destination)
   end
 end
 
-fs.mkdir("shlrm/api")
-fs.mkdir("shlrm/bin")
+fs.makeDir("shlrm/api")
+fs.makeDir("shlrm/bin")
 
 for k,v in pairs(apis) do
   dload("api/" .. v, "shlrm/api/" .. v)
