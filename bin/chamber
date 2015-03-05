@@ -37,12 +37,128 @@ if #args ~= 4 then
 end
 
 -- dig out the entry tunnel first. It'll be a simple 3 tall by 2 wide thing
+-- Expect to start at the bottom left of the entry tunnel
+-- End at the bottom left of the entry tunnel
+function entryTunnel(theLength)
+  local myLength = theLength
+  sturtle.refuel(1)
+  turtle.up()
+  while myLength > 0 do
+    mylength = mylength - 1
+    sturtle.refuel(1)
+    sdig.mineFwd()
+    sdig.digUp()
+    sdig.digDown()
+    turtle.turnRight()
 
--- TODO PLAN
--- After digging out the entry tunnel, go back down to the bottom leftest of the entry tunnel
--- dig one block in
--- figure out how many blocks to go left by, roughly half the width? (maybe length)
--- Go that many blocks
--- Start room digging algorithm, don't worry about overfilling I think
+    turtle.mineFwd()
+    sdig.digUp()
+    sdig.digDown()
+    
+    turtle.turnLeft()
+    turtle.turnLeft()
+    sdig.mineForward()
+    turtle.turnRight()
+  end
+
+  sturtle.refuel(1)
+  turtle.down()
+end
+
+function chamberStartPoint(theLength)
+  -- Go left this many blocks, and that's our start point
+  local left = math.ceil(theLength / 2)
+
+  sturtle.refuel(1)
+  sdig.mineFwd()
+  turtle.turnLeft()
+
+  while left > 0 do
+    left = left - 1
+    sdig.mineFwd()
+  end
+
+  -- We're now at our starting point, bottom left of the chamber to mine out (inside it)
+  turtle.turnRight()
+end
+
+function digChamber(tlength, twidth, theight)
+  -- Length is to the right of where the start point is
+  -- width is in front of me
+  -- Height is how many blocks tall to make it
+  local remainingHeight = theight
+
+  while remainingHeight > 0 do
+    -- Still got some chamber to work on
+    -- If it's more than 3, we can add two to current and dig up/down
+    -- if it's 2 we can add one to current and dig one up
+    -- if it's 1 we can add zero and dig up
+    -- TODO: somethying about passHeight is wrong
+    local passHeight 
+    if remainingHeight > 3 then
+      passHeight = 3
+    else
+      passHeight = remainingHeight % 3
+    end
+    local passLength = 0
+    local passWidth = 0
+
+    --Set up start position
+    if passHeight == 3 then
+      sdig.mineUp()
+      sdig.mineUp()
+    elseif passHeight == 2 then
+      sdig.mineUp()
+    end
+    -- Ready to start digging this chamber
+
+    -- We'll always mine up, we might mine forward and down as well
+    -- Can probably just call the operations, the detect won't find anything
+
+    while passWidth < twidth do
+      passWidth = passWidth + 1
+      local right = false
+      if passWidth % 2 == 1 then
+        right = true
+      end
+
+      if right then
+        turtle.turnRight()
+      else
+        turtle.turnLeft()
+      end
+
+      while passLength < tlength do
+        passLength = passLength - 1
+        if passHeight == 3 then
+          sdig.digUp()
+          sdig.digDown()
+          sdig.mineFwd()
+        else
+          sdig.digUp()
+          sdig.mineFwd() --extra, but I don't care
+        end
+      end
+      
+      -- Face forward for the next row
+      if right then
+        turtle.turnLeft()
+      else
+        turtle.turnRight()
+      end
+
+      -- Done with pass, where am I?
+      -- It might just work right here...
+  end
+
+end
+
+print("Making entry tunnel " .. args[4] .. " long")
+entryTunnel(args[4])
+print("Headed to start of chamber location")
+chamberStartPoint(args[1])
+print("Makin chamber!")
+digChamber(args[1], args[2], args[3])
+print("OMG DONE COME FIND ME")
 
 -- vim: set filetype=lua :
