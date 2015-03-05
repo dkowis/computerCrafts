@@ -36,6 +36,13 @@ if #args ~= 4 then
   error("no args")
 end
 
+-- dig out the entry tunnel first. It'll be a simple 3 tall by 2 wide thing
 
+-- TODO PLAN
+-- After digging out the entry tunnel, go back down to the bottom leftest of the entry tunnel
+-- dig one block in
+-- figure out how many blocks to go left by, roughly half the width? (maybe length)
+-- Go that many blocks
+-- Start room digging algorithm, don't worry about overfilling I think
 
 -- vim: set filetype=lua :
