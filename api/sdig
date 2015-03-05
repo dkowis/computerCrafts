@@ -4,7 +4,7 @@
 os.loadAPI("shlrm/api/sturtle")
 
 -- Takes a direction and then will make sure that direction is empty (handling gravel n such)
-function mineDir(direction)
+function digDir(direction)
   local fdetect
   local fdig
 
@@ -28,6 +28,27 @@ function mineDir(direction)
       return false --why return false here?
     end
 
+  end
+end
+
+
+--mines and moves in any direction ensuring that the blocks don't remain
+function mineDir(direction)
+  local fmove
+  if direction == "up" then
+    fmove = turtle.up
+  elseif direction == "down" then
+    fmove = turtle.down
+  elseif direction == "forward" then
+    fmove = turtle.forward
+  else
+    print("PANIC")
+  end
+
+  sturtle.refuel(1)
+  while not fmove() do
+    -- TODO: this might need a delay...
+    digDir(direction)
   end
 end
 

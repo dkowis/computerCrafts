@@ -39,25 +39,22 @@ end
 
 --Head Forward
 function mineForward()
-  sturtle.refuel(1)
-  while not turtle.forward() do
-    sdig.mineDir("forward")
-  end
-  --TODO set position knowledge in here
+  sturtle.mineDir("forward")
 end
 
 
 --Mines up and moves up...
 function mineUp()
-  sturtle.refuel(1)
-  while not turtle.up() do
-    sdig.mineDir("up")
-  end
+  sturtle.mineDir("up")
+end
+
+function mineDown()
+  sturtle.mineDir("down")
 end
 
 --Make sure that when we mine up a square, it stays empty
 function emptyUp()
-  sdig.mineDir("up")
+  sdig.digDir("up")
 end
 
 --Mines out a slot of the tunnel
@@ -71,17 +68,17 @@ end
 function mineSlot()
   sturtle.refuel(22) -- one slot for the wall is 22 operations, possibly not the most efficient
   mineForward() --move into the slot to begin mining
-  sdig.mineDir("up")
-  sdig.mineDir("down")
+  sdig.digDir("up")
+  sdig.digDir("down")
   turtle.turnRight()
 
   mineForward()
   emptyUp()
-  sdig.mineDir("down")
+  sdig.digDir("down")
 
   mineForward()
   emptyUp()
-  sdig.mineDir("down")
+  sdig.digDir("down")
 
   -- Move Up into top right corner
   turtle.up()
@@ -91,13 +88,12 @@ function mineSlot()
   -- Prepare to mine back
   turtle.turnLeft()
   mineForward()
-  sdig.mineDir("up")
+  sdig.digDir("up")
   mineForward()
 
   --Return to start position for next round
-  --TODO replace all down calls iwth make sure we can actually go down calls
-  turtle.down()
-  turtle.down()
+  mineDown()
+  mineDown()
   turtle.turnRight()
 end
 
