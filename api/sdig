@@ -22,7 +22,7 @@ function mineDir(direction)
   while fdetect() do
     sturtle.refuel(1)
     if fdig() then
-      collect() --TODO: this should be smarter...
+      sturtle.collect() --TODO: this should be smarter...
       sleep(0.5) -- only sleep once digged
     else
       return false --why return false here?

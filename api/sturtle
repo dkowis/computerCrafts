@@ -2,6 +2,8 @@
 
 -- Hopefully I can reuse some of this stuff in other APIs and such
 
+local collected = 0
+
 --A fairly naieve refueling algorithm
 function refuel(amount)
   local fuelLevel = turtle.getFuelLevel()
@@ -32,6 +34,29 @@ function refuel(amount)
     return false
   end
   -- Has enough fuel
+  return true
+end
+
+-- Determine if we can collect the item that we possibly just mined or something
+function collect()
+  local bFull = true
+  local nTotalItems = 0
+  for n=1,16 do
+    local nCount = turtle.getItemCount(n)
+    if nCount == 0 then
+      bFull = false
+    end
+    nTotalItems = nTotalItems + nCount
+  end
+
+  if nTotalItems > collected then
+    collected = nTotalItems
+    print("Collected " .. collected .. " items")
+  end
+  if bFull then
+    print("No empty slots left!")
+    return false
+  end
   return true
 end
 
