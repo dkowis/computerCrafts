@@ -100,7 +100,7 @@ function digChamber(tlength, twidth, theight)
     if remainingHeight >= 3 then
       passHeight = 3
     else
-      passHeight = remainingHeight % 3
+      passHeight = remainingHeight
     end
     local passLength = 0
     local passWidth = 0
