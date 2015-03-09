@@ -194,6 +194,13 @@ print("Headed to start of chamber location")
 chamberStartPoint(tonumber(args[1]))
 print("Makin chamber!")
 digChamber(tonumber(args[1]), tonumber(args[2]), tonumber(args[3]))
+
+print("HEADED DOWN TO THE LEVEL!")
+local finalDescent = tonumber(args[3])
+while finalDescent > 0 do
+  finalDescent = finalDescent - 1
+  turtle.down()
+end
 print("OMG DONE COME FIND ME")
 
 -- vim: set filetype=lua :
