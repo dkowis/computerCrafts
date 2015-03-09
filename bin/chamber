@@ -128,9 +128,11 @@ function digChamber(tlength, twidth, theight)
       if passWidth % 2 == 1 then
         right = true
       end
+      if not forwardPass then
+        right = not right
+      end
 
-      -- TODO: something's broke here :(
-      if right and forwardPass then
+      if right then
         print("turning Right")
         turtle.turnRight()
       else
@@ -154,7 +156,7 @@ function digChamber(tlength, twidth, theight)
       end
       --
       -- Face forward for the next row
-      if right and forwardPass then
+      if right then
         print("turning left (END)")
         turtle.turnLeft()
       else
