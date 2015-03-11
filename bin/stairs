@@ -1,0 +1,100 @@
+-- Customizeable stairs.
+--
+-- width, depth, stairwidth
+-- Stairwidth is how long to make the steps, 1 is normal jaggies, 2 would leave two squares
+-- width is how wide to make the stair path
+-- depth is how far down to go
+-- stairs will be 4 tall
+local args = { ... }
+
+local depth = tonumber(args[2])
+local width = tonumber(args[1])
+local height = 4
+local stairWidth = tonumber(args[3])
+
+os.loadAPI("shlrm/api/sturtle")
+os.loadAPI("shlrm/api/sdig")
+os.loadAPI("shlrm/api/scrn")
+
+-- Functions
+function clearscreen()
+  term.clear()
+  scrn.regwrite("CHAMBERBOT", 12, 1)
+  scrn.regwrite("Developed by BeepDog", 17,12)
+  term.setCursorPos(1,3)
+end
+
+-- Primary software begins here
+if #args ~= 3 then
+  clearscreen()
+  print("Need 3 arguments:")
+  print("width depth stairWidth")
+  error("no args")
+end
+
+
+function stairbox(width)
+  -- Assumption is that we're in the starting location for this frame
+  -- * bottom left
+  -- And we'll end that way when we're done in this algorithm.
+  --Create one square of the stairbox with the specified width
+  --Height for this isn't really configurable...
+  local lHeight = height
+  local lwidth = width
+
+  turtle.turnRight()
+  sdig.mineUp()
+  while lwidth - 1 > 0 do
+    lwidth = lwidth - 1
+    sdig.digUp()
+    sdig.digDown()
+    sdig.mineFwd()
+    sdig.digDown()
+  end
+  sdig.mineUp()
+  turtle.turnLeft()
+  turtle.turnLeft()
+  lwidth = width
+  while lwidth - 1 > 0 do
+    lwidth = lwidth - 1
+    sdig.digUp()
+    turtle.forward()
+  end
+  sdig.digUp() -- last part of stair top
+  turtle.turnRight()
+  sdig.mineDown()
+  sdig.mineDown()
+
+end
+
+-- Bot will start in the slice, so it's first move will be to mine forward one, and be in the square
+--Make a box that is however wide, by 4 tall
+-- do that however many stepWidth times
+-- mine forward and down one, move down one and repeat
+
+-- Dig in to get started
+sdig.mineFwd()
+local ldepth = 0
+while ldepth < depth do
+  ldepth = ldepth + 1
+  -- gonna make stairs
+  -- if we have more depth, and we're not on the first one, dig in and down
+  if ldepth <= depth and ldepth > 1 then
+    sdig.mineFwd()
+    sdig.mineDown()
+  end
+
+  local lsw = 0
+  while lsw < stairWidth do
+    lsw = lsw + 1
+    if lsw ~= 1 then
+      -- if it's not the first one, we have to position ourselves for the next one
+      sdig.mineFwd()
+    end
+    stairbox(width) --create a stairbox real quick
+  end
+end
+
+print("OMG DONE COME FIND ME")
+
+-- vim: set filetype=lua :

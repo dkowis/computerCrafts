@@ -8,7 +8,7 @@ local apis = {
 }
 
 local progs = {
-  "fancyTunnel", "chamber"
+  "fancyTunnel", "chamber", "stairs"
 }
 
 local function dload(path, destination)
